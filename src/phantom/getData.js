@@ -49,13 +49,64 @@ page.open(src_url, function(status) {
         }
 
         function parseHostedAndPrivileged(tr) {
-            return {};
+            var children = tr.querySelectorAll('td');
+            var out = {};
+
+            if(children.length) {
+                out.name = parsePermissionName(children[0]);
+                out.apiName = parseApiName(children[1]);
+                out.apiURL = parseApiURL(children[1]);
+                // we're skipping the api description
+                out.appType = parseAppType(children[3]);
+                // skipping 'access' property and 'default granted' columns
+                out.platforms = parseAppPlatforms(children[6]);
+            }
+            
+
+            return out;
+        }
+
+        function parsePermissionName(td) {
+            var value = td.querySelector('code');
+            if(value) {
+                return value.innerHTML;
+            }
+            return 'unParsable';
+        }
+
+        function parseApiName(td) {
+            var node = td.querySelector('a');
+            if(node) {
+                return node.innerHTML;
+            }
+            return 'unknown';
+        }
+
+        function parseApiURL(td) {
+            var node = td.querySelector('a');
+            if(node) {
+                return node.href;
+            }
+            return 'unknown';
+        }
+
+        function parseAppType(td) {
+            return td.innerHTML;
+        }
+
+        function parseAppPlatforms(td) {
+            var txt = td.textContent;
+            return txt.split(',').map(function(p) { return p.trim(); });
         }
 
         return permissions;
     });
 
-    console.log(permissions.length);
+    console.log(permissions.length, 'permissions gathered');
+
+    permissions.forEach(function(p, i) {
+        console.log(i, JSON.stringify(p, null, 4));
+    });
 
     phantom.exit();
 
