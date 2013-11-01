@@ -6,9 +6,9 @@ function valueOf(token) {
     return parts.join('=');
 }
 
-function getArg(key) {
+function getArg(key, defaultValue) {
     var regexp = new RegExp('^--' + key + '=');
-    var value;
+    var value = defaultValue;
 
     args.forEach(function(arg, i) {
        if(regexp.test(arg)) {
