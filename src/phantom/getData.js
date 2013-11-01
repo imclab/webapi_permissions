@@ -3,6 +3,7 @@ var argsReader = require('./argsReader');
 var src_url = argsReader.get('src-url');
 var dst_file = argsReader.get('dst-file', 'output.json');
 var webpage = require('webpage');
+var fs = require('fs');
 
 console.log('reading from', src_url, 'writing to', dst_file);
 
@@ -125,16 +126,21 @@ page.open(src_url, function(status) {
         return permissions;
     });
 
-    console.log(permissions.length, 'permissions gathered');
+
+    addAndroidPermissions(permissions);
 
     permissions.forEach(function(p, i) {
         console.log(i, JSON.stringify(p, null, 4));
     });
 
-    var fs = require('fs');
     fs.write(dst_file, JSON.stringify(permissions, null, 4));
 
     phantom.exit();
 
 });
 
+
+// "Augment" the array of permissions with the name of the equivalent permission in Android, if it exists
+function addAndroidPermissions(permissions) {
+    var androidPermissions = require('./androidPermissions');
+}
