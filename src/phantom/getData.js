@@ -1,7 +1,7 @@
 var argsReader = require('./argsReader');
 
-var src_url = argsReader.get('src_url');
-var dst_file = argsReader.get('dst_file', 'output.json');
+var src_url = argsReader.get('src-url');
+var dst_file = argsReader.get('dst-file', 'output.json');
 var webpage = require('webpage');
 
 console.log('reading from', src_url, 'writing to', dst_file);
@@ -45,10 +45,7 @@ page.open(src_url, function(status) {
         });
 
         function parseCertified(tr) {
-            return {};
-        }
-
-        function parseHostedAndPrivileged(tr) {
+            
             var children = tr.querySelectorAll('td');
             var out = {};
 
@@ -58,12 +55,33 @@ page.open(src_url, function(status) {
                 out.apiURL = parseApiURL(children[1]);
                 // we're skipping the api description
                 out.appType = parseAppType(children[3]);
-                // skipping 'access' property and 'default granted' columns
+                // skipping 'access' property column (col 4)
+                out.platforms = parseAppPlatforms(children[5]);
+            }
+            
+
+            return out;
+
+        }
+
+        function parseHostedAndPrivileged(tr) {
+
+            var children = tr.querySelectorAll('td');
+            var out = {};
+
+            if(children.length) {
+                out.name = parsePermissionName(children[0]);
+                out.apiName = parseApiName(children[1]);
+                out.apiURL = parseApiURL(children[1]);
+                // we're skipping the api description (2)
+                out.appType = parseAppType(children[3]);
+                // skipping 'access' property and 'default granted' columns (4, 5)
                 out.platforms = parseAppPlatforms(children[6]);
             }
             
 
             return out;
+
         }
 
         function parsePermissionName(td) {
@@ -78,6 +96,11 @@ page.open(src_url, function(status) {
             var node = td.querySelector('a');
             if(node) {
                 return node.innerHTML;
+            } else {
+                var txt = td.innerHTML.trim();
+                if(txt.length) {
+                    return txt;
+                }
             }
             return 'unknown';
         }
@@ -87,7 +110,7 @@ page.open(src_url, function(status) {
             if(node) {
                 return node.href;
             }
-            return 'unknown';
+            return null;
         }
 
         function parseAppType(td) {
@@ -107,6 +130,9 @@ page.open(src_url, function(status) {
     permissions.forEach(function(p, i) {
         console.log(i, JSON.stringify(p, null, 4));
     });
+
+    var fs = require('fs');
+    fs.write(dst_file, JSON.stringify(permissions, null, 4));
 
     phantom.exit();
 

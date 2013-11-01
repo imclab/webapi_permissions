@@ -1,10 +1,12 @@
 var spawn = require('child_process').spawn;
 
 var url = 'https://developer.mozilla.org/en-US/Apps/Developing/App_permissions';
+var dstFile = '../dist/permissions.json';
 
 run('phantomjs', [
         'phantom/getData.js',
-        '--src_url=' + url
+        '--src-url=' + url,
+        '--dst-file=' + dstFile
 ], function() {
     console.log('done!');
 });
