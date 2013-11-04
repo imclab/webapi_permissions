@@ -29,21 +29,30 @@ page.open(src_url, function(status) {
             trs = Array.prototype.slice.call(trs);
         }
 
-        console.log(trs);
-
+        
         trs.forEach(function(tr, index) {
+
             var numChildren = tr.childElementCount;
+            var childrenPermissions = {};
 
             console.log(index, numChildren);
 
             if(numChildren === 6) {
-                permissions.push(parseCertified(tr));
+                childrenPermissions = parseCertified(tr);
             } else if(numChildren === 7) {
-                permissions.push(parseHostedAndPrivileged(tr));
+                childrenPermissions = parseHostedAndPrivileged(tr);
             }
 
+            if(Object.keys(childrenPermissions).length > 0) {
+                permissions.push(childrenPermissions);
+            }
 
         });
+
+
+        return permissions;
+
+        //
 
         function parseCertified(tr) {
             
@@ -123,7 +132,6 @@ page.open(src_url, function(status) {
             return txt.split(',').map(function(p) { return p.trim(); });
         }
 
-        return permissions;
     });
 
 
@@ -142,5 +150,5 @@ page.open(src_url, function(status) {
 
 // "Augment" the array of permissions with the name of the equivalent permission in Android, if it exists
 function addAndroidPermissions(permissions) {
-    var androidPermissions = require('./androidPermissions');
+    //var androidPermissions = require('./androidPermissions');
 }
