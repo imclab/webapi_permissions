@@ -35,8 +35,6 @@ page.open(src_url, function(status) {
             var numChildren = tr.childElementCount;
             var childrenPermissions = {};
 
-            console.log(index, numChildren);
-
             if(numChildren === 6) {
                 childrenPermissions = parseCertified(tr);
             } else if(numChildren === 7) {
@@ -137,10 +135,6 @@ page.open(src_url, function(status) {
 
     addAndroidPermissions(permissions);
 
-    permissions.forEach(function(p, i) {
-        console.log(i, JSON.stringify(p, null, 4));
-    });
-
     fs.write(dst_file, JSON.stringify(permissions, null, 4));
 
     phantom.exit();
@@ -150,5 +144,26 @@ page.open(src_url, function(status) {
 
 // "Augment" the array of permissions with the name of the equivalent permission in Android, if it exists
 function addAndroidPermissions(permissions) {
-    //var androidPermissions = require('./androidPermissions');
+    var androidPermissions = require('../androidPermissions');
+    var androidKeys = Object.keys(androidPermissions);
+
+    permissions.forEach(function(perm, index) {
+        var firefoxName = perm.name;
+        var androidPerm = searchAndroid(firefoxName);
+        if(androidPerm) {
+            perm.android = androidPerm;
+            permissions[index] = perm;
+        }
+    });
+
+    function searchAndroid(firefoxName) {
+        for(var i = 0; i < androidKeys.length; i++) {
+            var key = androidKeys[i];
+            var perm = androidPermissions[key];
+            if(perm === firefoxName) {
+                return perm;
+            }
+        }
+        return false;
+    }
 }
