@@ -161,7 +161,7 @@ function addAndroidPermissions(permissions) {
             var key = androidKeys[i];
             var perm = androidPermissions[key];
             if(perm === firefoxName) {
-                return perm;
+                return key;
             }
         }
         return false;
