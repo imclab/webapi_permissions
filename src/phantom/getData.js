@@ -23,7 +23,7 @@ page.open(src_url, function(status) {
     var permissions = page.evaluate(function() {
 
         var trs = document.querySelectorAll('table tr');
-        var permissions = [];
+        var perms = [];
         
         if(trs.length > 0) {
             trs = Array.prototype.slice.call(trs);
@@ -42,13 +42,13 @@ page.open(src_url, function(status) {
             }
 
             if(Object.keys(childrenPermissions).length > 0) {
-                permissions.push(childrenPermissions);
+                perms.push(childrenPermissions);
             }
 
         });
 
 
-        return permissions;
+        return perms;
 
         //
 
@@ -132,8 +132,13 @@ page.open(src_url, function(status) {
 
     });
 
+    // weird thing, if I don't do this we get RangeErrors when pushing to the
+    // permissions array. WHY?
+    permissions = permissions.slice(0);
+
 
     addAndroidPermissions(permissions);
+    addGrantedPermissions(permissions);
 
     fs.write(dst_file, JSON.stringify(permissions, null, 4));
 
@@ -152,7 +157,6 @@ function addAndroidPermissions(permissions) {
         var androidPerm = searchAndroid(firefoxName);
         if(androidPerm.length) {
             perm.android = androidPerm;
-            permissions[index] = perm;
         }
     });
 
@@ -170,3 +174,12 @@ function addAndroidPermissions(permissions) {
         return andPerm;
     }
 }
+
+function addGrantedPermissions(permissions) {
+    var grantedPermissions = require('../grantedPermissions');
+    grantedPermissions.forEach(function(p) {
+        p.granted = true;
+        permissions.push(p);
+    });
+}
+

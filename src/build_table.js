@@ -17,6 +17,8 @@ function run(command, args, endCallback) {
         args = [];
     }
 
+    console.log('RUNNING: ' + command + ' ' + args.join(' '));
+
     var spawned = spawn(command, args);
 
     spawned.stdout.on('data', function(data) {
