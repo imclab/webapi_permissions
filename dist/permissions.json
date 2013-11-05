@@ -408,7 +408,9 @@
     },
     {
         "android": [
+            "READ_SMS",
             "RECEIVE_SMS",
+            "SEND_SMS",
             "WRITE_SMS"
         ],
         "apiName": "WebSMS",
