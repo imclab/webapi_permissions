@@ -150,20 +150,23 @@ function addAndroidPermissions(permissions) {
     permissions.forEach(function(perm, index) {
         var firefoxName = perm.name;
         var androidPerm = searchAndroid(firefoxName);
-        if(androidPerm) {
+        if(androidPerm.length) {
             perm.android = androidPerm;
             permissions[index] = perm;
         }
     });
 
     function searchAndroid(firefoxName) {
+        var andPerm = [];
+
         for(var i = 0; i < androidKeys.length; i++) {
             var key = androidKeys[i];
             var perm = androidPermissions[key];
             if(perm === firefoxName) {
-                return key;
+                andPerm.push(key);
             }
         }
-        return false;
+
+        return andPerm;
     }
 }
