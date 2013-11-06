@@ -403,6 +403,7 @@
         "android": [
             "CHANGE_CONFIGURATION",
             "CHANGE_NETWORK_STATE",
+            "READ_SETTINGS",
             "WRITE_SETTINGS"
         ]
     },
@@ -431,7 +432,8 @@
         ],
         "android": [
             "CALL_PHONE",
-            "CALL_PRIVILEGED"
+            "CALL_PRIVILEGED",
+            "READ_PHONE_STATE"
         ]
     },
     {
@@ -493,6 +495,19 @@
         "platforms": [
             "FxOS"
         ]
+    },
+    {
+        "android": [
+            "BILLING"
+        ],
+        "apiName": "Payment",
+        "apiURL": "https://wiki.mozilla.org/WebAPI/WebPayment",
+        "appType": "hosted",
+        "name": "payment",
+        "platforms": [
+            "FxOS"
+        ],
+        "granted": true
     },
     {
         "android": [

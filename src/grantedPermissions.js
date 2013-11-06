@@ -2,6 +2,16 @@
 // This is constructed manually (uuurgh)
 module.exports = [
     {
+        "android": [ "BILLING" ],
+        "apiName": "Payment",
+        "apiURL": "https://wiki.mozilla.org/WebAPI/WebPayment",
+        "appType": "hosted",
+        "name": "payment",
+        "platforms": [
+            "FxOS"
+        ]
+    },
+    {
         "android": [ "INTERNET" ],
         "apiName": "",
         "apiURL": "",
